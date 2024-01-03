@@ -1,6 +1,7 @@
 import pandas as pd
+from pandas import json_normalize
+
 import os
-import json
 
 def json_to_csv():
     #Verificamos encontrar la ruta respectiva en cualquier entorno
@@ -10,7 +11,22 @@ def json_to_csv():
 
     with open(ruta_json, 'r') as json_file:
         data = pd.read_json(json_file)
-    data.to_csv('DB/archivo.csv', index=False)
+
+    # Descompemos la columna 'albums' por ser anidada
+    data_descompuesto_albums = pd.concat([data.drop(['albums'], axis=1), json_normalize(data['albums'])], axis=1)
+
+    # Descomponemos la columna 'tracks' utilizando explode
+    df = data_descompuesto_albums.explode('tracks').reset_index(drop=True)
+
+    # Descomponemos las columnas anidadas dentro de 'tracks'
+    df_final = pd.json_normalize(df['tracks'], sep='_')
+
+    # Combinamos los DataFrames
+    df_resultado = pd.concat([df.drop(['tracks'], axis=1), df_final], axis=1)
+
+    #Exportamos a un archivo csv
+    df_resultado.to_csv('DB/dataset.csv', index=False)
+    
 
 if __name__ == "__main__":
     json_to_csv()
