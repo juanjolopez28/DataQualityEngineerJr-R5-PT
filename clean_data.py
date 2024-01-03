@@ -10,7 +10,7 @@ def json_to_csv():
 
     with open(ruta_json, 'r') as json_file:
         data = pd.read_json(json_file)
-    data.to_csv('archivo.csv', index=False)
+    data.to_csv('DB/archivo.csv', index=False)
 
 if __name__ == "__main__":
     json_to_csv()
