@@ -14,7 +14,10 @@ def json_to_csv():
 
     # Descompemos la columna 'albums' por ser anidada
     data_descompuesto_albums = pd.concat([data.drop(['albums'], axis=1), json_normalize(data['albums'])], axis=1)
-
+    
+    #Exportamos a un archivo csv respecto a albumnes
+    data_descompuesto_albums.to_csv('DB/dataset_albumes.csv', index=False)
+    
     # Descomponemos la columna 'tracks' utilizando explode
     df = data_descompuesto_albums.explode('tracks').reset_index(drop=True)
 
@@ -24,7 +27,7 @@ def json_to_csv():
     # Combinamos los DataFrames
     df_resultado = pd.concat([df.drop(['tracks'], axis=1), df_final], axis=1)
 
-    #Exportamos a un archivo csv
+    #Exportamos a un archivo csv respecto a tracks
     df_resultado.to_csv('DB/dataset.csv', index=False)
     
 
